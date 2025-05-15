@@ -8,19 +8,44 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class ArticleForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title')
-            ->add('content')
+            ->add('title', TextType::class, [
+                'label' => 'Titre de l\'article',
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Entrez un titre pour votre article',
+                    'required' => true
+                ]
+            ])
+            ->add('content', TextareaType::class, [
+                'label' => 'Votre commentaire',
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 4,
+                    'placeholder' => 'Écrivez votre commentaire ici...',
+                    'required' => true
+                ]
+            ])
             ->add('createdAt')
-            ->add('categories', EntityType::class, [
+            ->add('categories',EntityType::class, [
                 'class' => Category::class,
-                'choice_label' => 'id',
+                'choice_label' => 'title',
                 'multiple' => true,
+                'expanded' => true,
+                'label' => 'Catégories',
+                'attr' => [
+                    'class' => 'form-check',
+                ],
+                'label_attr' => [
+                    'class' => 'form-check-label'
+                ]
             ])
         ;
     }
