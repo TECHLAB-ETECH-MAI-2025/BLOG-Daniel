@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Entity\Comment;
 use App\Form\ArticleForm;
+use App\Form\CommentForm;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -49,7 +50,7 @@ final class ArticleController extends AbstractController
         $comment = new Comment();
         $comment->setArticle($article);
 
-        $form = $this->createForm(CommentType::class, $comment);
+        $form = $this->createForm(CommentForm::class, $comment);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
