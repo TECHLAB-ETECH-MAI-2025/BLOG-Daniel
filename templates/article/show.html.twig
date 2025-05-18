@@ -1,34 +1,96 @@
+{# templates/article/show.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Article{% endblock %}
+{% block title %}{{ article.title }}{% endblock %}
 
 {% block body %}
-    <h1>Article</h1>
+    <div class="container mt-4">
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ article.id }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ article.title }}</td>
-            </tr>
-            <tr>
-                <th>Content</th>
-                <td>{{ article.content }}</td>
-            </tr>
-            <tr>
-                <th>CreatedAt</th>
-                <td>{{ article.createdAt ? article.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+        {# Affichage de l'article #}
+        <h1>{{ article.title }}</h1>
+        <p class="article-content">
+            {{ article.content|nl2br }}
+        </p>
 
-    <a href="{{ path('app_article_index') }}">back to list</a>
+        <p class="text-muted">
+            Publié le {{ article.createdAt|date('d/m/Y H:i') }}
+        </p>
 
-    <a href="{{ path('app_article_edit', {'id': article.id}) }}">edit</a>
+        {# Affichage des catégories #}
+        {% if article.categories|length > 0 %}
+            <div class="mb-3">
+                <strong>Catégories :</strong>
+                {% for category in article.categories %}
+                    <span class="badge bg-secondary">{{ category.title }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
 
-    {{ include('article/_delete_form.html.twig') }}
+        <hr>
+
+        {# Section des commentaires #}
+        <h2>Commentaires ({{ article.comments|length }})</h2>
+
+        {% if article.comments|length > 0 %}
+            <div class="mb-4">
+                {% for comment in article.comments %}
+                    <div class="border p-3 mb-3">
+                        <strong>{{ comment.author }}</strong>
+                        <span class="text-muted float-end">{{ comment.createdAt|date('d/m/Y H:i') }}</span>
+                        <p class="mt-2">{{ comment.content|nl2br }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">Aucun commentaire pour le moment. Soyez le premier à réagir !</p>
+        {% endif %}
+
+        <hr>
+
+        {# Formulaire d'ajout de commentaire #}
+        <div class="comment-form mt-4">
+            <h3>Laisser un commentaire</h3>
+
+            {{ form_start(commentForm, {'attr': {'novalidate': 'novalidate'}}) }}
+
+            <div class="mb-3">
+                {{ form_label(commentForm.author, 'Votre nom', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(commentForm.author, {'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'Votre nom'
+                }}) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(commentForm.content, 'Votre commentaire', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(commentForm.content, {'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'Votre commentaire...',
+                    'rows': 4
+                }}) }}
+            </div>
+
+            <button class="btn btn-primary">Publier le commentaire</button>
+
+            {{ form_end(commentForm) }}
+        </div>
+
+        <a href="{{ path('app_article_index') }}" class="btn btn-link mt-4">← Retour à la liste</a>
+
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .article-content {
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+
+        .comment-form {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
 {% endblock %}

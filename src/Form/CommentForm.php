@@ -33,7 +33,6 @@ class CommentForm extends AbstractType
                     'required' => true
                 ]
             ])
-            ->add('createdAt')
         ;
     }
 
