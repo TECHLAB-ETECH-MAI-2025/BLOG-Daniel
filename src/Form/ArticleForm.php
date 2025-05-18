@@ -33,7 +33,6 @@ class ArticleForm extends AbstractType
                     'required' => true
                 ]
             ])
-            ->add('createdAt')
             ->add('categories',EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'title',
