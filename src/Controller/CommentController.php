@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Article;
 use App\Entity\Comment;
 use App\Form\CommentForm;
 use App\Repository\CommentRepository;
@@ -22,10 +23,20 @@ final class CommentController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_comment_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
+    #[Route('/new/{articleId}', name: 'app_comment_new', methods: ['GET', 'POST'])]
+    public function new(
+        int $articleId,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $article = $entityManager->getRepository(Article::class)->find($articleId);
+
+        if (!$article) {
+            throw $this->createNotFoundException('Article non trouvé');
+        }
+
         $comment = new Comment();
+        $comment->setArticle($article);
         $form = $this->createForm(CommentForm::class, $comment);
         $form->handleRequest($request);
 
@@ -33,12 +44,14 @@ final class CommentController extends AbstractController
             $entityManager->persist($comment);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_comment_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_article_show', [
+                'id' => $articleId
+            ]);
         }
 
         return $this->render('comment/new.html.twig', [
-            'comment' => $comment,
             'form' => $form,
+            'comment' => $comment,
         ]);
     }
 
