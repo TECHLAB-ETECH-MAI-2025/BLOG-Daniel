@@ -25,11 +25,11 @@ class ArticleForm extends AbstractType
                 ]
             ])
             ->add('content', TextareaType::class, [
-                'label' => 'Votre commentaire',
+                'label' => 'Que voulez-vous écrire ?',
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 4,
-                    'placeholder' => 'Écrivez votre commentaire ici...',
+                    'placeholder' => 'Écrivez votre contenu ici',
                     'required' => true
                 ]
             ])
