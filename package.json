@@ -23,6 +23,7 @@
     "dependencies": {
         "@tailwindcss/postcss": "^4.1.7",
         "bootstrap": "^5.3.6",
+        "bootstrap-icons": "^1.13.1",
         "postcss-loader": "^8.1.1"
     }
 }
