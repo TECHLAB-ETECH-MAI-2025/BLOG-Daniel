@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+    <div class="overflow-hidden">
+        <div class="d-flex flex-row bg-white px-5 pt-2 pb-1 justify-content-between align-items-center">
+            <h4>BLOG</h4>
+            <a class="text-decoration-none p-2 bg-two text-white rounded-pill link-underline-opacity-0" href="{{ path('app_article_new') }}">Create new</a>
+        </div>
+        <div class="d-flex flex-row p-5 gap-5">
+            <div class="w-25">
+                <div class="bg-white p-4 rounded-2">
+                    <h5 class="">Categories</h5>
+                    <ul class="list-unstyled">
+                        {% for category in categories %}
+                            <li class="pb-2 mb-2 {% if not loop.last %}border-bottom{% endif %}">
+                                {{ category.title }}
+                            </li>
+                        {% else %}
+                            <li>No records found</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="row row-cols-2 ms-auto w-75 gap-5">
+                {% for article in articles %}
+                    <div class="col bg-white p-4 col-5 rounded-2">
+                        <p class="text-body-tertiary mb-0">{{ article.createdAt ? article.createdAt|date('M d.Y')|upper : '' }}</p>
+                        <h4>{{ article.title }}</h4>
+                        <p>{{ article.content }}</p>
+                    </div>
+                {% else %}
+                    <div>No records found</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
