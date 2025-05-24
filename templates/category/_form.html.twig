@@ -1,4 +1,14 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+
+     <div class="mb-3">
+        {{ form_label(form.title, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.title) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.description, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.description) }}
+    </div>
+
+    <button class="border-0 px-3 py-2 rounded-pill bg-two text-white">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
