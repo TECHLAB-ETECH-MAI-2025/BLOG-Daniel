@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\ArticleLike;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -35,6 +36,9 @@ class Article
     #[ORM\OneToMany(mappedBy: 'article', targetEntity: Comment::class, orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $comments;
 
+    #[ORM\OneToMany(mappedBy: 'article', targetEntity: ArticleLike::class, orphanRemoval: true, cascade: ['persist', 'remove'])]
+    private Collection $likes;
+
     #[ORM\PrePersist]
     public function setCreatedAtValue(): void
     {
@@ -47,6 +51,7 @@ class Article
     {
         $this->categories = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->likes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -142,5 +147,39 @@ class Article
         }
 
         return $this;
+    }
+
+    /**
+    * @return Collection<int, ArticleLike>
+    */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(ArticleLike $like): static
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes->add($like);
+            $like->setArticle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(ArticleLike $like): static
+    {
+        if ($this->likes->removeElement($like)) {
+            if ($like->getArticle() === $this) {
+                $like->setArticle(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getLikesCount(): int
+    {
+        return $this->likes->count();
     }
 }
