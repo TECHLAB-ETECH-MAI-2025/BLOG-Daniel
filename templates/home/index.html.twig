@@ -50,6 +50,9 @@
                 {% else %}
                     <div>No records found</div>
                 {% endfor %}
+                <div class="d-flex justify-content-center w-100">
+                    {{ knp_pagination_render(articles) }}
+                </div>
             </div>
         </div>
     </div>
