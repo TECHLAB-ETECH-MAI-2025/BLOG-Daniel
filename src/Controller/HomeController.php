@@ -16,12 +16,9 @@ final class HomeController extends AbstractController
     public function index(ArticleRepository $articleRepository, CategoryRepository $categoryRepository, PaginatorInterface $paginator,
     Request $request): Response
     {
-        $query = $articleRepository->createQueryBuilder('a')
-            ->orderBy('a.createdAt', 'DESC')
-            ->getQuery();
 
         $pagination = $paginator->paginate(
-            $query,
+            $articleRepository->findBy([],['createdAt' => 'DESC']),
             $request->query->getInt('page', 1),
             10 // articles par page
         );
