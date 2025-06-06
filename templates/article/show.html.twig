@@ -11,6 +11,7 @@
         </div>
 
         <div class="d-flex justify-content-center">
+            <div id="alerts-container"></div>
             <div class="w-75 mt-5 p-5 bg-white rounded-4 shadow">
             {# Affichage de l'article #}
             <h1>{{ article.title }}</h1>
@@ -31,6 +32,15 @@
                     {% endfor %}
                 </div>
             {% endif %}
+
+            <div class="d-flex align-items-center gap-2">
+                <button class="like-button border-0 bg-transparent p-0"
+                        data-article-id="{{ article.id }}"
+                        aria-label="J'aime">
+                    <i class="bi {{ app.user and article.isLikedByUser(app.user) ? 'bi-heart-fill text-danger' : 'bi-heart' }} fs-6"></i>
+                </button>
+                <span id="likes-count">{{ article.likes|length }}</span>
+            </div>
 
             <hr>
 
@@ -57,7 +67,7 @@
             <div class="comment-form mt-4">
                 <h3>Laisser un commentaire</h3>
 
-                {{ form_start(commentForm, {'attr': {'novalidate': 'novalidate'}}) }}
+                 {{ form_start(commentForm, {'attr': {'novalidate': 'novalidate'}}) }}
 
                 <div class="mb-3">
                     {{ form_label(commentForm.author, 'Votre nom', {'label_attr': {'class': 'form-label'}}) }}
@@ -85,6 +95,11 @@
         </div>
         
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('article') }}
 {% endblock %}
 
 {% block stylesheets %}

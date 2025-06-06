@@ -6,6 +6,7 @@ use App\Entity\Article;
 use App\Entity\Comment;
 use App\Form\ArticleForm;
 use App\Form\CommentForm;
+use App\Repository\ArticleLikeRepository;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -45,8 +46,14 @@ final class ArticleController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_article_show', methods: ['GET', 'POST'])]
-    public function show(Article $article, Request $request, EntityManagerInterface $entityManager): Response
+    public function show(Article $article, Request $request, EntityManagerInterface $entityManager, ArticleLikeRepository $likeRepository): Response
     {
+        $ipAddress = $request->getClientIp();
+		$isLiked = $likeRepository->findOneBy([
+			'article' => $article,
+			'ipAddress' => $ipAddress
+		]) !== null;
+        
         $comment = new Comment();
         $comment->setArticle($article);
 
@@ -71,6 +78,8 @@ final class ArticleController extends AbstractController
         return $this->render('article/show.html.twig', [
             'article' => $article,
             'commentForm' => $form->createView(),
+            'is_liked' => $isLiked,
+            
         ]);
     }
 

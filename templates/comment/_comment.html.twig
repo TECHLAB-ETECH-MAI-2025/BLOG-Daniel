@@ -1,0 +1,5 @@
+<div class="border p-3 mb-3">
+    <strong>{{ comment.author }}</strong>
+    <span class="text-muted float-end">{{ comment.createdAt|date('d/m/Y H:i') }}</span>
+    <p class="mt-2">{{ comment.content|nl2br }}</p>
+</div>
