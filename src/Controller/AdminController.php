@@ -16,8 +16,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminController extends AbstractController
 {
     #[Route('/', name: 'app_admin_dashboard')]
-    public function index(): Response
+    public function index(UserRepository $userRepository): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $userCount = $userRepository->count([]);
         $verifiedCount = $userRepository->count(['isVerified' => true]);
@@ -33,6 +34,8 @@ class AdminController extends AbstractController
     #[Route('/users', name: 'app_admin_users')]
     public function users(UserRepository $userRepository): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $users = $userRepository->findAll();
 
         return $this->render('admin/users.html.twig', [
@@ -46,6 +49,8 @@ class AdminController extends AbstractController
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager
     ): Response {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $user = new User();
         $form = $this->createForm(AdminUserForm::class, $user, [
             'is_new_user' => true,
@@ -84,6 +89,8 @@ class AdminController extends AbstractController
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager
     ): Response {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $form = $this->createForm(AdminUserForm::class, $user);
         $form->handleRequest($request);
 
@@ -116,6 +123,8 @@ class AdminController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager
     ): Response {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
             if ($user === $this->getUser()) {
                 $this->addFlash('error', 'Vous ne pouvez pas supprimer votre propre compte.');
