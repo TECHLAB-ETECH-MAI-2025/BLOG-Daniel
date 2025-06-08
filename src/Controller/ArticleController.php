@@ -48,11 +48,15 @@ final class ArticleController extends AbstractController
     #[Route('/{id}', name: 'app_article_show', methods: ['GET', 'POST'])]
     public function show(Article $article, Request $request, EntityManagerInterface $entityManager, ArticleLikeRepository $likeRepository): Response
     {
-        $ipAddress = $request->getClientIp();
-		$isLiked = $likeRepository->findOneBy([
-			'article' => $article,
-			'ipAddress' => $ipAddress
-		]) !== null;
+        $user = $this->getUser();
+
+		$isLiked = false;
+        if ($user) {
+            $isLiked = $likeRepository->findOneBy([
+                'article' => $article,
+                'user' => $user
+            ]) !== null;
+        }
         
         $comment = new Comment();
         $comment->setArticle($article);

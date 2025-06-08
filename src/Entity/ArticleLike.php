@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\User;
 use App\Repository\ArticleLikeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,8 +14,9 @@ class ArticleLike
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 45)]
-    private ?string $ipAddress = null;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $createdAt = null;
@@ -27,15 +29,14 @@ class ArticleLike
         return $this->id;
     }
 
-    public function getIpAddress(): ?string
-    {
-        return $this->ipAddress;
-    }
+    public function getUser(): ?User
+{
+    return $this->user;
+}
 
-    public function setIpAddress(string $ipAddress): static
+    public function setUser(?User $user): static
     {
-        $this->ipAddress = $ipAddress;
-
+        $this->user = $user;
         return $this;
     }
 

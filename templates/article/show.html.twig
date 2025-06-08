@@ -5,11 +5,6 @@
 
 {% block body %}
     <div class="pb-5">
-         <div class="d-flex flex-row bg-white shadow-sm px-5 pt-2 pb-2 justify-content-between align-items-center">
-            <a class="text-decoration-none text-black fw-bold" href="/">BLOG</a>
-            <a class="text-decoration-none p-2 bg-two text-white rounded-pill " href="{{ path('app_article_new') }}">Create new</a>
-        </div>
-
         <div class="d-flex justify-content-center">
             <div id="alerts-container"></div>
             <div class="w-75 mt-5 p-5 bg-white rounded-4 shadow">
@@ -33,14 +28,15 @@
                 </div>
             {% endif %}
 
-            <div class="d-flex align-items-center gap-2">
-                <button class="like-button border-0 bg-transparent p-0"
-                        data-article-id="{{ article.id }}"
-                        aria-label="J'aime">
-                    <i class="bi {{ app.user and article.isLikedByUser(app.user) ? 'bi-heart-fill text-danger' : 'bi-heart' }} fs-6"></i>
-                </button>
-                <span id="likes-count">{{ article.likes|length }}</span>
-            </div>
+           {% if app.user %}
+                <div class="d-flex align-items-center gap-2">
+                    <button class="like-button border-0 bg-transparent p-0" data-article-id="{{ article.id }}" aria-label="J'aime">
+                        <i class="bi {{ article.isLikedByUser(app.user) ? 'bi-heart-fill text-danger' : 'bi-heart' }} fs-6"></i>
+                    </button>
+                    <span id="likes-count">{{ article.likes|length }}</span>
+                </div>
+            {% endif %}
+
 
             <hr>
 

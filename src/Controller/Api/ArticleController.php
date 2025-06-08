@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[Route('/api')]
 final class ArticleController extends AbstractController{
@@ -93,40 +94,45 @@ final class ArticleController extends AbstractController{
     }
 
     #[Route('/article/{id}/like', name: 'api_article_like', methods: ['POST'])]
-    public function likeArticle(Article $article, Request $request, EntityManagerInterface $entityManager, ArticleLikeRepository $likeRepository): JsonResponse 
-    {
-        $ipAddress = $request->getClientIp();
+    public function likeArticle(
+        Article $article,
+        EntityManagerInterface $entityManager,
+        ArticleLikeRepository $likeRepository
+    ): JsonResponse {
+        $user = $this->getUser();
 
+        if (!$user) {
+            throw new AccessDeniedException('Vous devez être connecté pour liker un article.');
+        }
+    
         $existingLike = $likeRepository->findOneBy([
             'article' => $article,
-            'ipAddress' => $ipAddress
+            'user' => $user
         ]);
-
+    
         if ($existingLike) {
             $entityManager->remove($existingLike);
             $entityManager->flush();
-
+    
             return new JsonResponse([
                 'success' => true,
                 'liked' => false,
-                'likesCount' => $article->getLikes()->count()
+                'likesCount' => $article->getLikes()->count(),
             ]);
         } else {
             $like = new ArticleLike();
             $like->setArticle($article);
-            $like->setIpAddress($ipAddress);
+            $like->setUser($user);
             $like->setCreatedAt(new \DateTimeImmutable());
-
+    
             $entityManager->persist($like);
             $entityManager->flush();
-
+    
             return new JsonResponse([
                 'success' => true,
                 'liked' => true,
-                'likesCount' => $article->getLikes()->count()
+                'likesCount' => $article->getLikes()->count(),
             ]);
-        } 
-    }
-
-    
+        }
+    }    
 }
