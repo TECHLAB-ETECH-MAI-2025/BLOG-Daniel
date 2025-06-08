@@ -12,6 +12,12 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class HomeController extends AbstractController
 {
+    #[Route('/', name: 'app_welcome')]
+    public function welcome(): Response
+    {
+        return $this->render('home/welcome.html.twig');
+    }
+
     #[Route('/home', name: 'app_home')]
     public function index(ArticleRepository $articleRepository, CategoryRepository $categoryRepository, PaginatorInterface $paginator,
     Request $request): Response
@@ -28,4 +34,6 @@ final class HomeController extends AbstractController
             'categories' => $categoryRepository->findAll(),
         ]);
     }
+
+
 }
