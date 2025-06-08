@@ -66,7 +66,8 @@ final class ArticleController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $comment->setCreatedAt(new \DateTimeImmutable());
-
+            $comment->setUser($this->getUser());
+            
             $entityManager->persist($comment);
             $entityManager->flush();
 

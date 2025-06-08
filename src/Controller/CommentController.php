@@ -41,8 +41,13 @@ final class CommentController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setCreatedAt(new \DateTimeImmutable());
+            $comment->setUser($this->getUser());
+
             $entityManager->persist($comment);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Votre commentaire a été publié avec succès !');
 
             return $this->redirectToRoute('app_article_show', [
                 'id' => $articleId

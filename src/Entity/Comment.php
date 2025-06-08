@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\User;
 use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,8 +16,9 @@ class Comment
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $author = null;
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
@@ -42,17 +44,17 @@ class Comment
         return $this->id;
     }
 
-    public function getAuthor(): ?string
+    public function getUser(): ?User
     {
-        return $this->author;
+        return $this->user;
     }
 
-    public function setAuthor(string $author): static
+    public function setUser(?User $user): static
     {
-        $this->author = $author;
-
+        $this->user = $user;
         return $this;
     }
+
 
     public function getContent(): ?string
     {

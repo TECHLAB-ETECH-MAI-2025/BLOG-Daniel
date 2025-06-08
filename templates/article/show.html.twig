@@ -47,7 +47,7 @@
                 <div class="mb-4">
                     {% for comment in article.comments %}
                         <div class="border p-3 mb-3">
-                            <strong>{{ comment.author }}</strong>
+                            <strong>{{ comment.user.firstName }}</strong>
                             <span class="text-muted float-end">{{ comment.createdAt|date('d/m/Y H:i') }}</span>
                             <p class="mt-2">{{ comment.content|nl2br }}</p>
                         </div>
@@ -64,15 +64,7 @@
                 <h3>Laisser un commentaire</h3>
 
                  {{ form_start(commentForm, {'attr': {'novalidate': 'novalidate'}}) }}
-
-                <div class="mb-3">
-                    {{ form_label(commentForm.author, 'Votre nom', {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(commentForm.author, {'attr': {
-                        'class': 'form-control',
-                        'placeholder': 'Votre nom'
-                    }}) }}
-                </div>
-
+                 
                 <div class="mb-3">
                     {{ form_label(commentForm.content, 'Votre commentaire', {'label_attr': {'class': 'form-label'}}) }}
                     {{ form_widget(commentForm.content, {'attr': {
