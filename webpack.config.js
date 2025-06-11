@@ -10,6 +10,8 @@ Encore
     .addEntry('app', './assets/app.js')
     .addEntry('article', './assets/article.js')
     .addEntry('article_list', './assets/article_list.js')
+    .addEntry('category_list', './assets/category_list.js')
+    .addEntry('comment_list', './assets/comment_list.js')
     .splitEntryChunks()
     .enableStimulusBridge('./assets/controllers.json')
     .enableSingleRuntimeChunk()
