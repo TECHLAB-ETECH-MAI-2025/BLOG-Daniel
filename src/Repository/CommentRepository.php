@@ -16,6 +16,42 @@ class CommentRepository extends ServiceEntityRepository
         parent::__construct($registry, Comment::class);
     }
 
+    public function findForDataTable(int $start, int $length, ?string $search = null): array
+{
+    $qb = $this->createQueryBuilder('c')
+        ->leftJoin('c.article', 'a')
+        ->leftJoin('c.user', 'u')
+        ->addSelect('a', 'u');
+
+    if ($search) {
+        $qb->andWhere('c.content LIKE :search OR a.title LIKE :search OR u.email LIKE :search')
+           ->setParameter('search', '%' . $search . '%');
+    }
+
+    $countQb = clone $qb;
+    $countQb->select('COUNT(c.id)');
+
+    $totalCount = (int) $this->createQueryBuilder('c')
+        ->select('COUNT(c.id)')
+        ->getQuery()
+        ->getSingleScalarResult();
+
+    $filteredCount = (int) $countQb->getQuery()->getSingleScalarResult();
+
+    $qb->orderBy('c.createdAt', 'DESC')
+       ->setFirstResult($start)
+       ->setMaxResults($length);
+
+    $results = $qb->getQuery()->getResult();
+
+    return [
+        'data' => $results,
+        'totalCount' => $totalCount,
+        'filteredCount' => $filteredCount,
+    ];
+}
+
+
     //    /**
     //     * @return Comment[] Returns an array of Comment objects
     //     */
