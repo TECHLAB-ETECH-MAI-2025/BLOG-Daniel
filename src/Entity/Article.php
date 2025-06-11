@@ -25,7 +25,7 @@ class Article
     private ?string $content = null;
 
     #[ORM\Column]
-    private ?\DateTime $createdAt = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     /**
      * @var Collection<int, Category>
@@ -43,7 +43,7 @@ class Article
     public function setCreatedAtValue(): void
     {
         if ($this->createdAt === null) {
-            $this->createdAt = new \DateTime();
+            $this->createdAt = new \DateTimeImmutable();
         }
     }
 
@@ -83,12 +83,12 @@ class Article
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTime
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
 

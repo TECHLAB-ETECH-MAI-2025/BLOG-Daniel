@@ -10,7 +10,7 @@ $(document).ready(function() {
         serverSide: true,
         responsive: true,
         ajax: {
-            url: '/api/articles/data',
+            url: '/api/article/data',
             type: 'POST'
         },
         columns: [
@@ -36,7 +36,6 @@ $(document).ready(function() {
     $searchInput.on('input', function() {
         const query = $(this).val().trim();
 
-        // Effacer le timeout précédent
         clearTimeout(searchTimeout);
 
         if (query.length < 2) {
@@ -44,10 +43,9 @@ $(document).ready(function() {
             return;
         }
 
-        // Définir un délai avant d'envoyer la requête
         searchTimeout = setTimeout(() => {
             $.ajax({
-                url: '/api/articles/search',
+                url: '/api/article/search',
                 method: 'GET',
                 data: { q: query },
                 dataType: 'json',
@@ -71,7 +69,6 @@ $(document).ready(function() {
         }, 300);
     });
 
-    // Cliquer sur un résultat de recherche
     $(document).on('click', '.search-item', function() {
         const articleId = $(this).data('id');
         if (articleId) {
@@ -79,7 +76,6 @@ $(document).ready(function() {
         }
     });
 
-    // Cacher les résultats quand on clique ailleurs
     $(document).on('click', function(e) {
         if (!$(e.target).closest('.search-container').length) {
             $searchResults.removeClass('show');
