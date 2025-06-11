@@ -3,31 +3,17 @@
 {% block title %}Accueil{% endblock %}
 
 {% block body %}
-<h1>Bienvenue sur notre application</h1>
+<div class="container py-5 text-center">
+    <h1 class="mb-4">Bienvenue sur notre plateforme</h1>
 
-<p>Cette application démontre la mise en place d'un système d'authentification complet avec Symfony.</p>
+    <p class="lead mb-5">
+        Explorez notre application web sécurisée avec authentification, gestion de profil et plus encore.
+    </p>
 
-<p>Vous pouvez vous inscrire, vous connecter, gérer votre profil et bien plus encore.</p>
-
-{% if not app.user %}
-    <a class="btn btn-primary" href="{{ path('app_register') }}">S'inscrire</a>
-    <a class="btn btn-secondary" href="{{ path('app_login') }}">Se connecter</a>
-{% else %}
-    <a class="btn btn-primary" href="{{ path('app_profile') }}">Mon profil</a>
-
-    {% if is_granted('ROLE_ADMIN') %}
-        <a class="btn btn-warning" href="{{ path('app_admin_dashboard') }}">Administration</a>
+    {% if app.user %}
+        <a href="{{ path('app_profile') }}" class="btn btn-primary me-2">Mon profil</a>
     {% endif %}
-{% endif %}
-
-<hr>
-
-<h2>Authentification sécurisée</h2>
-<p>Système d'authentification complet avec inscription, connexion et gestion des rôles.</p>
-
-<h2>Vérification par email</h2>
-<p>Vérification des comptes par email et système de réinitialisation de mot de passe.</p>
-
-<h2>Gestion des utilisateurs</h2>
-<p>Interface d'administration pour gérer les utilisateurs et leurs permissions.</p>
+    
+    <a href="{{ path('app_home') }}" class="btn btn-outline-secondary">Accueil</a>
+</div>
 {% endblock %}
