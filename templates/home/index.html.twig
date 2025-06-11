@@ -4,14 +4,14 @@
 
 {% block body %}
     <div class="overflow-hidden">
-        <div class="d-flex flex-row p-5 gap-5">
+        <div class="d-flex flex-row pt-3 gap-5">
             <div class="w-25">
                 <div class="bg-white p-4 rounded-2 shadow">
                     <div class="d-flex flex-row justify-content-between">
                         <h5 class="mb-3">Categories</h5>
                         <a class="text-black text-decoration-none fw-bold" href="{{ path('app_category_new') }}">+</a>
                     </div>
-                    <ul class="list-unstyled">
+                    <ul class="list-unstyled category-list">
                         {% for category in categories %}
                             <li class="d-flex pb-2 mb-2 justify-content-between {% if not loop.last %}border-bottom{% endif %}">
                                 {{ category.title }}
@@ -27,20 +27,22 @@
             </div>
             <div class="row row-cols-2 ms-auto w-75 gap-5">
                 {% for article in articles %}
-                <div class="d-flex flex-column justify-content-between text-black shadow col bg-white p-4 col-5 rounded-2">
-                    <a href="{{ path('app_article_show', {'id': article.id}) }}" class="text-decoration-none text-black">
-                        <p class="text-body-tertiary mb-0">{{ article.createdAt ? article.createdAt|date('M d.Y')|upper : '' }}</p>
-                        <h4>{{ article.title }}</h4>
-                        <p>{{ article.content }}</p>
-                        {% if article.categories|length > 0 %}
-                            {% for category in article.categories %}
-                                <span class="badge bg-two">{{ category.title }}</span>
-                            {% endfor %}
-                        {% endif %}
-                    </a>
-                    <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="ms-auto text-black">
-                        <i class="bi bi-pencil"></i>
-                    </a>
+                <div class="article-card text-black shadow col bg-white p-4 col-5 rounded-2">
+                    <div class="article-card-content">
+                        <a href="{{ path('app_article_show', {'id': article.id}) }}" class="text-decoration-none text-black">
+                            <p class="text-body-tertiary mb-0">{{ article.createdAt ? article.createdAt|date('M d.Y')|upper : '' }}</p>
+                            <h4>{{ article.title }}</h4>
+                            <p>{{ article.content }}</p>
+                            {% if article.categories|length > 0 %}
+                                {% for category in article.categories %}
+                                    <span class="badge bg-two">{{ category.title }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </a>
+                        <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="ms-auto text-black">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                    </div>
                 </div>
 
                 {% else %}
