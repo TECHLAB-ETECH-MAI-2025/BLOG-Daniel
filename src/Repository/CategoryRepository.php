@@ -16,6 +16,41 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
+    public function findForDataTable(int $start, int $length, ?string $search = null): array
+{
+    $qb = $this->createQueryBuilder('c');
+    
+    // Filtre de recherche
+    if ($search) {
+        $qb->where('c.title LIKE :search OR c.description LIKE :search')
+           ->setParameter('search', '%'.$search.'%');
+    }
+    
+    // Compte total avant filtrage
+    $totalCount = $this->createQueryBuilder('c')
+        ->select('COUNT(c.id)')
+        ->getQuery()
+        ->getSingleScalarResult();
+    
+    // Requête paginée
+    $qb->orderBy('c.createdAt', 'DESC')
+       ->setFirstResult($start)
+       ->setMaxResults($length);
+    
+    $results = $qb->getQuery()->getResult();
+    
+    // Compte filtré
+    $filteredCount = $search 
+        ? count($results) 
+        : $totalCount;
+    
+    return [
+        'data' => $results,
+        'totalCount' => (int)$totalCount,
+        'filteredCount' => $filteredCount,
+    ];
+}
+
     //    /**
     //     * @return Category[] Returns an array of Category objects
     //     */
