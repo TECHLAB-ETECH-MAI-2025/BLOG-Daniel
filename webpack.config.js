@@ -12,6 +12,7 @@ Encore
     .addEntry('article_list', './assets/article_list.js')
     .addEntry('category_list', './assets/category_list.js')
     .addEntry('comment_list', './assets/comment_list.js')
+    .addEntry('user_list', './assets/user_list.js')
     .splitEntryChunks()
     .enableStimulusBridge('./assets/controllers.json')
     .enableSingleRuntimeChunk()
