@@ -7,6 +7,7 @@ use App\Form\AdminUserForm;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -138,5 +139,45 @@ class AdminController extends AbstractController
         }
 
         return $this->redirectToRoute('app_admin_users');
+    }
+
+    #[Route('/user/data', name: 'admin_user_data', methods: ['POST'])]
+    public function data(Request $request, UserRepository $userRepository): JsonResponse
+    {
+        $draw = $request->request->getInt('draw');
+        $start = $request->request->getInt('start');
+        $length = $request->request->getInt('length');
+        $search = $request->request->all('search')['value'] ?? null;
+
+        $queryBuilder = $userRepository->createQueryBuilder('u');
+
+        if ($search) {
+            $queryBuilder->andWhere('u.email LIKE :search OR u.firstName LIKE :search OR u.lastName LIKE :search')
+                         ->setParameter('search', '%' . $search . '%');
+        }
+
+        $total = (clone $queryBuilder)->select('COUNT(u.id)')->getQuery()->getSingleScalarResult();
+
+        $users = $queryBuilder
+            ->setFirstResult($start)
+            ->setMaxResults($length)
+            ->getQuery()
+            ->getResult();
+
+        $data = array_map(fn($user) => [
+            'id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'roles' => implode(', ', $user->getRoles()),
+            'fullName' => $user->getFullName(),
+            'createdAt' => $user->getCreatedAt()?->format('Y-m-d H:i'),
+            'actions' => $this->renderView('admin/_actions.html.twig', ['user' => $user]),
+        ], $users);
+
+        return new JsonResponse([
+            'draw' => $draw,
+            'recordsTotal' => $total,
+            'recordsFiltered' => $total,
+            'data' => $data,
+        ]);
     }
 }
