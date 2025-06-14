@@ -144,10 +144,6 @@
 
         <div class="d-flex gap-3 align-items-center">
             {% if app.user %}
-                <a class="text-decoration-none p-2 bg-two text-white rounded-pill" href="{{ path('app_article_new') }}">
-                    Create new
-                </a>
-
                 <div class="profile-dropdown">
                     <div class="profile-circle">
                         {{ app.user.firstName ? app.user.firstName|slice(0, 1)|upper : app.user.email|slice(0, 1)|upper }}
