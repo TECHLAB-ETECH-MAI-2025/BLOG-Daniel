@@ -29,6 +29,9 @@ class CategoryApiController extends AbstractController
             'title' => $category->getTitle(),
             'description' => $category->getDescription(),
             'createdAt' => $category->getCreatedAt()?->format('Y-m-d H:i'),
+            'actions' => $this->renderView('category/_actions.html.twig', [
+                'category' => $category,
+            ]),
         ], $results['data']);
 
         return new JsonResponse([

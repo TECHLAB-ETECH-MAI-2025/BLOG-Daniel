@@ -17,15 +17,9 @@ $(document).ready(function () {
             { data: 'description' },
             { data: 'createdAt' },
             {
-                data: 'id',
-                render: function (data, type, row) {
-                    return `
-                        <a href="/category/${data}">Afficher</a> |
-                        <a href="/category/${data}/edit">Modifier</a>
-                    `;
-                },
+                data: 'actions',
                 orderable: false,
-                searchable: false,
+                searchable: false
             }
         ]
     });

@@ -18,15 +18,9 @@ $(document).ready(function () {
             { data: 'content' },
             { data: 'createdAt' },
             {
-                data: 'id',
-                render: function (data) {
-                    return `
-                        <a href="/comment/${data}">Afficher</a> |
-                        <a href="/comment/${data}/edit">Modifier</a>
-                    `;
-                },
+                data: 'actions',
                 orderable: false,
-                searchable: false,
+                searchable: false
             }
         ]
     });

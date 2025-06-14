@@ -1,0 +1,6 @@
+<a href="{{ path('app_category_edit', {'id': category.id}) }}" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+
+<form method="post" action="{{ path('app_category_delete', {'id': category.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cette catégorie ?');" class="d-inline">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+    <button class="btn btn-sm btn-outline-danger">Delete</button>
+</form>

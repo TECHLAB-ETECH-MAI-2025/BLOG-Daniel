@@ -32,6 +32,9 @@ class CommentApiController extends AbstractController
                 'createdAt' => $comment->getCreatedAt()?->format('Y-m-d H:i'),
                 'articleTitle' => $comment->getArticle()->getTitle(),
                 'user' => $comment->getUser()?->getUserIdentifier(),
+                'actions' => $this->renderView('comment/_actions.html.twig', [
+                    'comment' => $comment,
+                ]),
             ];
         }, $results['data']);
 
