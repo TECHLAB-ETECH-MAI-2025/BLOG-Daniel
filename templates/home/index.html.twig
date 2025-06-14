@@ -3,30 +3,28 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
-    <div class="overflow-hidden">
-        <div class="d-flex flex-row pt-3 gap-5">
-            <div class="w-25">
-                <div class="bg-white p-4 rounded-2 shadow">
-                    <div class="d-flex flex-row justify-content-between">
-                        <h5 class="mb-3">Categories</h5>
-                        <a class="text-black text-decoration-none fw-bold" href="{{ path('app_category_new') }}">+</a>
-                    </div>
-                    <ul class="list-unstyled category-list">
-                        {% for category in categories %}
-                            <li class="d-flex pb-2 mb-2 justify-content-between {% if not loop.last %}border-bottom{% endif %}">
-                                {{ category.title }}
-                                <a href="{{ path('app_category_edit', {'id': category.id}) }}" class="ms-auto text-black">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            </li>
-                        {% else %}
-                            <li>No records found</li>
-                        {% endfor %}
-                    </ul>
+<div class="overflow-hidden">
+    <div class="d-flex flex-row pt-3 gap-5">
+        <div class="w-25">
+            <div class="bg-white p-4 rounded-2 shadow">
+                <div class="d-flex flex-row justify-content-between">
+                    <h5 class="mb-3">Categories</h5>
+                    <a class="text-black text-decoration-none fw-bold" href="{{ path('app_category_new') }}">+</a>
                 </div>
+                <ul class="list-unstyled category-list">
+                    {% for category in categories %}
+                        <li class="d-flex pb-2 mb-2 justify-content-between {% if not loop.last %}border-bottom{% endif %}">
+                            {{ category.title }}
+                        </li>
+                    {% else %}
+                        <li>No records found</li>
+                    {% endfor %}
+                </ul>
             </div>
-            <div class="row row-cols-2 ms-auto w-75 gap-5">
-                {% for article in articles %}
+        </div>
+
+        <div class="row row-cols-2 ms-auto w-75 gap-5">
+            {% for article in articles %}
                 <div class="article-card text-black shadow col bg-white p-4 col-5 rounded-2">
                     <div class="article-card-content">
                         <a href="{{ path('app_article_show', {'id': article.id}) }}" class="text-decoration-none text-black">
@@ -39,19 +37,73 @@
                                 {% endfor %}
                             {% endif %}
                         </a>
-                        <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="ms-auto text-black">
-                            <i class="bi bi-pencil"></i>
-                        </a>
                     </div>
                 </div>
-
-                {% else %}
-                    <div>No records found</div>
-                {% endfor %}
-                <div class="d-flex justify-content-center w-100">
-                    {{ knp_pagination_render(articles) }}
-                </div>
+            {% else %}
+                <div>No records found</div>
+            {% endfor %}
+            <div class="d-flex justify-content-center w-100">
+                {{ knp_pagination_render(articles) }}
             </div>
         </div>
     </div>
+
+    {% if app.user and form %}
+        <button id="toggle-chat" class="btn btn-primary rounded-circle shadow"
+            style="position: fixed; bottom: 20px; right: 20px; z-index: 1000; width: 60px; height: 60px;">
+            💬
+        </button>
+
+        <div id="chat-box" class="bg-white border rounded-2 shadow p-3"
+            style="position: fixed; bottom: 90px; right: 20px; width: 300px; max-height: 500px; display: none; z-index: 999; overflow-y: auto;">
+            
+            <form method="get" action="{{ path('app_home') }}">
+                <label for="receiver_id" class="form-label">Choisir un utilisateur :</label>
+                <select name="receiver_id" id="receiver_id" class="form-select mb-3" onchange="this.form.submit()">
+                    <option value="">-- Sélectionner un utilisateur --</option>
+                    {% for user in users %}
+                        {% if user.id != app.user.id %}
+                            <option value="{{ user.id }}" {% if receiver and receiver.id == user.id %}selected{% endif %}>
+                                {{ user.getFullName }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </form>
+
+            {% if receiver %}
+                <h5 class="mb-3">Chat avec {{ receiver.getFullName }}</h5>
+
+                <div id="chat-messages" class="mb-3" style="max-height: 200px; overflow-y: auto;">
+                    {% for message in messages %}
+                        <div>
+                            <strong>{{ message.sender.getFullName }}</strong>
+                            <span class="text-muted">({{ message.createdAt|date('H:i') }})</span> :
+                            {{ message.content }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {{ form_start(form, {'attr': {'id': 'chat-form'}}) }}
+                    {{ form_widget(form.content, {'attr': {'class': 'form-control mb-2', 'placeholder': 'Écrivez un message...'}}) }}
+                    <button class="btn btn-sm btn-success w-100" type="submit">Envoyer</button>
+                {{ form_end(form) }}
+            {% else %}
+                <p class="text-muted">Veuillez sélectionner un utilisateur pour démarrer la conversation.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    document.getElementById('toggle-chat').addEventListener('click', function () {
+        const chatBox = document.getElementById('chat-box');
+        chatBox.style.display = (chatBox.style.display === 'none' || chatBox.style.display === '') ? 'block' : 'none';
+    });
+</script>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('article') }}
 {% endblock %}
